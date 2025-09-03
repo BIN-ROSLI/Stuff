@@ -1,0 +1,148 @@
+---
+title: "Cours R322"
+author: "fir"
+date: "2025-09-01"
+output: word_document
+---
+
+Statistiques descriptives avec le langage R
+
+1.	Terminologie
+```{r}
+pop = read.csv2(file.choose(),header = T, stringsAsFactors = T)
+
+# read.csv2 pour importer un fichier csv français
+# (file.choose() pour ouvrir une fenetre de sélection de fichier
+# header = T pour dire aue la 1re ligne contient le nom des variables
+# stringsAsFactors = 1) pour transformer le texte en variable qualitative
+
+str(pop)
+
+# unique pour afficher la liste des valeurs
+
+unique(pop$credit) #c'est une variable qualitative nominale
+unique(pop$etudes) #c'est une variable qualitative ordinale
+
+# On ordonne les modalités
+pop$etudes2 = ordered(pop$etudes,levels = c("CAP", "BEP", "BAC", "BAC+2", "BAC+3", "BAC+5"))
+
+str(pop)
+
+#pour executer une ligne : ctrl + ENTREE
+
+unique(pop$loyer) # c'est une variable quantitative continue
+unique(pop$satisfaction) # c'est une variable quantitative discrète
+
+attach(pop) # qui permet de ne pas écrire pop$
+names(pop) # la liste des noms de variables
+
+summary(pop)
+
+```
+
+2.	Tableaux statistiques d’une variable : effectifs, fréquences
+a)	Une variable qualitative nominale
+```{r}
+(N_loisirs = sort(table(loisirs), decreasing = T)) # tableau des effectifs rangés par effectifs décroissants
+(P_loisirs = prop.table(N_loisirs)*100) # tableau des fréquences en %
+
+```
+b)	Pour les autres types de variables (l’ordre des modalités prime)
+```{r}
+(N_etudes = table(etudes2)) # tableau des effectifs selon l'ordre des modalités
+(P_etudes = prop.table(N_etudes)*100) # tableau des fréquences en %
+
+```
+
+c)	Tableau des fréquences cumulées croissantes
+```{r}
+(N_sat = table(satisfaction)) # tableau des effectifs selon l'ordre des modalités
+(P_sat = prop.table(N_sat)*100) # tableau des fréquences en %
+
+cumsum(P_sat) # les fréquences cumulées croissantes
+```
+
+3.	Valeurs caractéristiques pour des variables quantitatives
+```{r}
+# tendance centrale
+(moyAge = mean(age)) # la moyenne
+mean(loyer,na.rm = T) # la moyenne en oubliant les valeurs manquantes
+(median(age)) # 
+
+# les quartiles
+quantile(loyer,na.rm = T)
+
+# dispersion
+IQR(loyer,na.rm = T) # écart interquartile (- Q3 - Q1)
+var(loyer,na.rm = T) # variance
+sd(loyer,na.rm = T) # écart type
+
+# pour un bilan sur la variable age
+summary(age)
+sd(age)
+table(age)
+
+```
+
+4.	Les différents graphiques selon le type de la variable
+a)	Tuyaux d’orgue
+```{r}
+barplot(P_loisirs, main="Le principal loisir",col="red",space=1,las=1,xlab="Les loisirs",ylab="fréquences en %")
+# main : titre
+# col : couleur
+# space=1 :espacer les barres
+# las=1 : écriture horizontale
+# xlab et ylab : titres des axes
+
+# Pour une qualitative ordinale
+barplot(P_etudes, main="Niveau d'études",col=c("blue","darkblue","yellow","orange","red","darkred"),space=1,las=1,xlab="Diplome",ylab="fréquences en %")
+
+```
+
+b)	Secteurs circulaires
+```{r}
+N = table(sexe)
+(P = prop.table(N)*100)
+pie(P,main = "Le genre",col=c("pink","blue")) # indiquer les couleurs selon l'ordre alphabétique des modalités
+```
+
+c)	Diagramme en bâtons
+```{r}
+plot(table(age),main="Age",xlab="années",ylab="effectifs",las=1)
+```
+
+d)	Boxplot
+```{r}
+boxplot(age, main = "L'age")
+
+box = boxplot(loyer, main="Le loyer en euros")
+box # Tous les calculs faits pour tracer le boxplot
+box$out # liste des valeurs suspectes
+```
+
+e)	Histogramme
+```{r}
+hist(loyer)
+
+# histogramme en choisissant les bornes 
+bornes = c(30,300,500,600,700,850,1100) # les vecteurs des bornes
+
+par(xpd=NA) # pour écrire partout dans la fenetre graphique
+graph = hist(loyer,breaks=bornes,main="Le loyer en euros",col="darkblue",axes=F,ylab="");axis(1)
+text(graph$mids,graph$density,graph$counts,adj=c(0.5,-0.5))
+```
+
+f)	Courbe cumulative
+```{r}
+plot(ecdf(satisfaction),main = "les fréquences cumulées de la satisfaction",las=1)
+# attention plot(ecdf(variable brute)) et pas le tableau des fréquences
+```
+
+5.	Tableaux et graphiques pour résumer le croisement de deux variables
+a)	Tableau des effectifs et des fréquence pour un croisement de deux « qualitatives »
+b)	Histogrammes empilés ou non empilés
+c)	Boxplot
+d)	Nuage de points
+
+6.	Corrélation linéaire entre deux variables
+
