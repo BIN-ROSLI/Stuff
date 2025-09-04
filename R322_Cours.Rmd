@@ -140,9 +140,79 @@ plot(ecdf(satisfaction),main = "les fréquences cumulées de la satisfaction",la
 
 5.	Tableaux et graphiques pour résumer le croisement de deux variables
 a)	Tableau des effectifs et des fréquence pour un croisement de deux « qualitatives »
+```{r}
+# Tableau des effectifs
+(N=table(sexe,transportTravail)) # tableau des effectifs du croisement
+addmargins(N) # ajout des marges (total des lignes et columnes)
+
+#tableau des fréquences conditonnelles en lignes
+(Pligne = prop.table(N,1)*100) # "1" pour indiquer "en ligne"
+addmargins(Pligne,margin=2) # ajout de la colonne marginale "2" indique "en colonne"
+
+#tableau des fréquences conditonnelles en colonness
+(Pcol = prop.table(N,2)*100) # "1" pour indiquer "en colonne"
+addmargins(Pcol,margin=1) # ajout de la ligne marginale "2" indique "en ligne"
+```
+
 b)	Histogrammes empilés ou non empilés
+```{r}
+# Histogramme non empile des effectifs
+barplot(N,beside = T ,col=c("red","blue"),legend = T)
+
+# Histogramme empile des fréquences conditionnelles en lignes
+barplot(t(Pligne),col=rainbow(5), legend = T)
+
+# Histogramme empile des fréquences conditionnelles en colonnes
+barplot(Pcol,col=c("red","blue"), legend = T)
+
+# Il existe des packages pour tracer de beaux graphiques
+
+```
+
 c)	Boxplot
+```{r}
+boxplot(salaire~transportTravail, main = "La répartition des salaires selon le mode de transport")
+
+# Tableau des moyennes écart type quartiles... conditionnels
+RcmdrMisc::numSummary(salaire,groups = transportTravail)
+# tableau complet mais pas manipulable
+
+# Tableau des moyennes conditionnelles manipulable
+aggregate(salaire ~transportTravail,pop,mean)
+tapply(salaire,transportTravail,mean,na.rm=T)
+
+```
+
 d)	Nuage de points
+```{r}
+plot(loyer~salaire,main = "Le loyer en fonction du salaire")
+
+plot(loyer~salaire,col=sexe,main = "Le loyer en fonction du salaire",pch=20)
+legend("bottomright",legend=levels(sexe),col=1:2,pch=20)
+```
+
 
 6.	Corrélation linéaire entre deux variables
+```{r}
+# coefficient de corrélation linéaire
+cor(salaire,loyer,use="complete.obs")
+
+# nuage de points et droite des moindres carrés
+plot(loyer~salaire,main = "Le loyer en fonction du salaire")
+abline(lm(loyer~salaire),col="red")
+
+# équation de la droite des moindres carrés
+lm(loyer~salaire) # intercept est la constante
+# ici loyer = -103.5968 + 0.579*salaire
+
+# résidus
+modele=lm(loyer~salaire)
+
+val_ajustees = fitted(modele) # les valeurs ajustées
+residus = residuals(modele) # les résidus
+
+plot(residus~val_ajustees)
+
+```
+
 
