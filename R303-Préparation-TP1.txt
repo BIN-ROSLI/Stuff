@@ -1,0 +1,654 @@
+Router Ra :
+
+version 12.2
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname Ra
+!
+!
+!
+enable secret 5 $1$mERr$ot1cRjtddSxRK0SlrXlIP1
+!
+!
+!
+!
+!
+!
+no ip cef
+no ipv6 cef
+!
+!
+!
+username user3 password 0 pass3word
+!
+!
+!
+!
+!
+!
+!
+!
+ip ssh version 2
+ip domain-name gtr.tp
+!
+!
+!
+!
+!
+!
+!
+!
+interface FastEthernet0/0
+ ip address 192.168.100.254 255.255.255.0
+ duplex auto
+ speed auto
+!
+interface FastEthernet0/1
+ ip address 192.168.10.1 255.255.255.0
+ duplex auto
+ speed auto
+!
+ip classless
+ip route 0.0.0.0 0.0.0.0 192.168.10.254 
+!
+ip flow-export version 9
+!
+!
+!
+banner motd ^CVous etes connecte a l'equipement : Ra^C
+!
+!
+!
+!
+!
+line con 0
+ password console
+ login
+!
+line aux 0
+!
+line vty 0 4
+ login local
+ transport input ssh
+!
+!
+!
+end
+
+Router Rb:
+
+version 15.4
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname Rb
+!
+!
+!
+enable secret 5 $1$mERr$ot1cRjtddSxRK0SlrXlIP1
+!
+!
+!
+!
+!
+!
+no ip cef
+no ipv6 cef
+!
+!
+!
+username user3 password 0 pass3word
+!
+!
+!
+!
+!
+!
+!
+!
+ip ssh version 2
+ip domain-name gtr.tp
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface GigabitEthernet0/0/0
+ ip address 192.168.200.254 255.255.255.0
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/0/1
+ ip address 192.168.20.1 255.255.255.0
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/0/2
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+ip classless
+ip route 0.0.0.0 0.0.0.0 192.168.20.254 
+!
+ip flow-export version 9
+!
+!
+!
+banner motd ^CVous etes connecte a l'equipement : Rb^C
+!
+!
+!
+!
+line con 0
+ password console
+ login
+!
+line aux 0
+!
+line vty 0 4
+ login local
+ transport input ssh
+!
+!
+!
+end
+
+Router ASAa :
+
+version 15.1
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname ASAa
+!
+!
+!
+enable secret 5 $1$mERr$ot1cRjtddSxRK0SlrXlIP1
+!
+!
+!
+!
+!
+!
+no ip cef
+no ipv6 cef
+!
+!
+!
+username user3 password 0 pass3word
+!
+!
+license udi pid CISCO2811/K9 sn FTX10177JLT-
+!
+!
+!
+!
+!
+!
+!
+!
+!
+ip ssh version 2
+ip domain-name gtr.tp
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface FastEthernet0/0
+ ip address 10.4.109.163 255.255.255.0
+ ip nat outside
+ duplex auto
+ speed auto
+!
+interface FastEthernet0/1
+ ip address 192.168.10.254 255.255.255.0
+ ip nat inside
+ duplex auto
+ speed auto
+!
+interface FastEthernet1/0
+ ip address 172.17.3.254 255.255.255.0
+ duplex auto
+ speed auto
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+ip classless
+ip route 192.168.100.0 255.255.255.0 192.168.10.1 
+ip route 0.0.0.0 0.0.0.0 10.4.109.173 
+!
+ip flow-export version 9
+!
+!
+!
+banner motd ^CVous etes connecte a l'equipement : ASAa^C
+!
+!
+!
+!
+line con 0
+ password console
+ login
+!
+line aux 0
+!
+line vty 0 4
+ login local
+ transport input ssh
+!
+!
+!
+end
+
+Router ASAb :
+
+version 15.1
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname ASAb
+!
+!
+!
+enable secret 5 $1$mERr$ot1cRjtddSxRK0SlrXlIP1
+!
+!
+!
+!
+!
+!
+no ip cef
+no ipv6 cef
+!
+!
+!
+username user3 password 0 pass3word
+!
+!
+license udi pid CISCO2811/K9 sn FTX1017V225-
+!
+!
+!
+!
+!
+!
+!
+!
+!
+ip ssh version 2
+ip domain-name gtr.tp
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface FastEthernet0/0
+ ip address 10.4.109.173 255.255.255.0
+ ip nat outside
+ duplex auto
+ speed auto
+!
+interface FastEthernet0/1
+ ip address 192.168.20.254 255.255.255.0
+ ip nat inside
+ duplex auto
+ speed auto
+!
+interface FastEthernet1/0
+ ip address 172.18.3.254 255.255.255.0
+ duplex auto
+ speed auto
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+ip classless
+ip route 0.0.0.0 0.0.0.0 10.4.109.163 
+ip route 192.168.200.0 255.255.255.0 192.168.20.1 
+!
+ip flow-export version 9
+!
+!
+!
+banner motd ^CVous etes connecte a l'equipement : ASAb^C
+!
+!
+!
+!
+line con 0
+ password console
+ login
+!
+line aux 0
+!
+line vty 0 4
+ login local
+ transport input ssh
+!
+!
+!
+end
+
+SW-EXT : 
+
+version 15.0
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname SW-EXT
+!
+enable secret 5 $1$mERr$ot1cRjtddSxRK0SlrXlIP1
+!
+!
+!
+ip ssh version 2
+ip domain-name gtr.tp
+!
+username user3 secret 5 $1$mERr$NxOitVjk7iAKw7rrKvJpP0
+!
+!
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+interface FastEthernet0/1
+!
+interface FastEthernet0/2
+!
+interface FastEthernet0/3
+!
+interface FastEthernet0/4
+!
+interface FastEthernet0/5
+!
+interface FastEthernet0/6
+!
+interface FastEthernet0/7
+!
+interface FastEthernet0/8
+!
+interface FastEthernet0/9
+!
+interface FastEthernet0/10
+!
+interface FastEthernet0/11
+!
+interface FastEthernet0/12
+!
+interface FastEthernet0/13
+!
+interface FastEthernet0/14
+!
+interface FastEthernet0/15
+!
+interface FastEthernet0/16
+!
+interface FastEthernet0/17
+!
+interface FastEthernet0/18
+!
+interface FastEthernet0/19
+!
+interface FastEthernet0/20
+!
+interface FastEthernet0/21
+!
+interface FastEthernet0/22
+!
+interface FastEthernet0/23
+!
+interface FastEthernet0/24
+!
+interface GigabitEthernet0/1
+!
+interface GigabitEthernet0/2
+!
+interface Vlan1
+ ip address 10.4.109.183 255.255.255.0
+!
+ip default-gateway 10.4.109.163
+!
+banner motd ^CVous etes connecte a l'equipement : SW-EXT^C
+!
+!
+!
+line con 0
+ password console
+ login
+!
+line vty 0 4
+ login local
+ transport input ssh
+line vty 5 15
+ login
+!
+!
+!
+!
+end
+
+SW-DMZa : 
+
+version 15.0
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname SW-DMZa
+!
+enable secret 5 $1$mERr$ot1cRjtddSxRK0SlrXlIP1
+!
+!
+!
+ip ssh version 2
+ip domain-name gtr.tp
+!
+username user3 secret 5 $1$mERr$NxOitVjk7iAKw7rrKvJpP0
+!
+!
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+interface FastEthernet0/1
+!
+interface FastEthernet0/2
+!
+interface FastEthernet0/3
+!
+interface FastEthernet0/4
+!
+interface FastEthernet0/5
+!
+interface FastEthernet0/6
+!
+interface FastEthernet0/7
+!
+interface FastEthernet0/8
+!
+interface FastEthernet0/9
+!
+interface FastEthernet0/10
+!
+interface FastEthernet0/11
+!
+interface FastEthernet0/12
+!
+interface FastEthernet0/13
+!
+interface FastEthernet0/14
+!
+interface FastEthernet0/15
+!
+interface FastEthernet0/16
+!
+interface FastEthernet0/17
+!
+interface FastEthernet0/18
+!
+interface FastEthernet0/19
+!
+interface FastEthernet0/20
+!
+interface FastEthernet0/21
+!
+interface FastEthernet0/22
+!
+interface FastEthernet0/23
+!
+interface FastEthernet0/24
+!
+interface GigabitEthernet0/1
+!
+interface GigabitEthernet0/2
+!
+interface Vlan1
+ ip address 172.17.3.31 255.255.255.0
+!
+ip default-gateway 172.17.3.254
+!
+banner motd ^CVous etes connecte a l'equipement : SW-DMZa^C
+!
+!
+!
+line con 0
+ password console
+ login
+!
+line vty 0 4
+ login local
+ transport input ssh
+line vty 5 15
+ login
+!
+!
+!
+!
+end
+
+SW-DMZb :
+
+version 15.0
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname SW-DMZb
+!
+enable secret 5 $1$mERr$ot1cRjtddSxRK0SlrXlIP1
+!
+!
+!
+ip ssh version 2
+ip domain-name gtr.tp
+!
+username user3 secret 5 $1$mERr$NxOitVjk7iAKw7rrKvJpP0
+!
+!
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+interface FastEthernet0/1
+!
+interface FastEthernet0/2
+!
+interface FastEthernet0/3
+!
+interface FastEthernet0/4
+!
+interface FastEthernet0/5
+!
+interface FastEthernet0/6
+!
+interface FastEthernet0/7
+!
+interface FastEthernet0/8
+!
+interface FastEthernet0/9
+!
+interface FastEthernet0/10
+!
+interface FastEthernet0/11
+!
+interface FastEthernet0/12
+!
+interface FastEthernet0/13
+!
+interface FastEthernet0/14
+!
+interface FastEthernet0/15
+!
+interface FastEthernet0/16
+!
+interface FastEthernet0/17
+!
+interface FastEthernet0/18
+!
+interface FastEthernet0/19
+!
+interface FastEthernet0/20
+!
+interface FastEthernet0/21
+!
+interface FastEthernet0/22
+!
+interface FastEthernet0/23
+!
+interface FastEthernet0/24
+!
+interface GigabitEthernet0/1
+!
+interface GigabitEthernet0/2
+!
+interface Vlan1
+ ip address 172.18.3.32 255.255.255.0
+!
+ip default-gateway 172.18.3.254
+!
+banner motd ^CVous etes connecte a l'equipement : SW-DMZb^C
+!
+!
+!
+line con 0
+ password console
+ login
+!
+line vty 0 4
+ login local
+ transport input ssh
+line vty 5 15
+ login
+!
+!
+!
+!
+end
