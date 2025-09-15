@@ -35,7 +35,7 @@ public class Parc {
         monParc.add(m);
     }
 
-    public void afficher() {
+    public void afficher() { // afficher le contenu du parc
         System.out.println(nom);
         for (Materiel m: monParc) {
             System.out.println(m);
@@ -46,13 +46,36 @@ public class Parc {
         monParc.remove(m);
     }
 
-    public void supprimer(String numeroSerie) {
+    public void supprimer(String numeroSerie) { // supprimer le matériel avec le numéro de série donné
         for (Materiel m: monParc) {
             if (m.getNumeroSerie().equals(numeroSerie)) {
                 monParc.remove(m);
                 break;
             }
         }
+    }
+
+    public String rechercher(String numeroSerie) { // rechercher le matériel avec le numéro de série donné
+        for (Materiel m: monParc) {
+            if (m.getNumeroSerie().equals(numeroSerie)) {
+                System.out.println("Le materiel qui a " + numeroSerie + " est : " + m);
+            }
+        }
+        return null;
+    }
+
+    public ArrayList<Materiel> rechercherType(Materiel m) { // rechercher le matériel du même type que m
+        ArrayList<Materiel> result = new ArrayList<>();
+        for (Materiel x: monParc) {
+            if (x.getClass().equals(m.getClass())) {
+                result.add(x); 
+                System.out.println("Found: " + x + " of " + m);
+            }
+        }
+        if (result.isEmpty()) {
+            System.out.println("No materiel found of " + m);
+        }   
+        return result;
     }
 
     @Override

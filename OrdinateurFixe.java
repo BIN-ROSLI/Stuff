@@ -18,13 +18,13 @@ public class OrdinateurFixe extends Materiel {
         this.processeur = processeur;
     }
 
-    public OrdinateurFixe(String numeroSerie, String marque, int ram, String processeur, int batterie) {
+    public OrdinateurFixe(String numeroSerie, String marque, int ram, String processeur) {
         super(numeroSerie, marque);
         this.ram = ram;
         this.processeur = processeur;
     }
 
-    @Override
+    @Override // Redéfinition de la méthode toString() pour afficher les informations spécifiques à OrdinateurFixe
     public String toString() {
         return "OrdinateurFixe [" +
                 "Numéro serie = " + getNumeroSerie() +

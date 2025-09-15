@@ -1,22 +1,4 @@
-public class OrdinateurPortable extends Materiel {
-
-    private int ram;
-    public int getRam() {
-        return ram;
-    }
-
-    public void setRam(int ram) {
-        this.ram = ram;
-    }
-
-    private String processeur;
-    public String getProcesseur() {
-        return processeur;
-    }
-
-    public void setProcesseur(String processeur) {
-        this.processeur = processeur;
-    }
+public class OrdinateurPortable extends OrdinateurFixe {
 
     private int batterie;
 
@@ -29,9 +11,7 @@ public class OrdinateurPortable extends Materiel {
     }
 
     public OrdinateurPortable(String numeroSerie, String marque, int ram, String processeur, int batterie) {
-        super(numeroSerie, marque);
-        this.ram = ram;
-        this.processeur = processeur;
+        super(numeroSerie, marque, ram, processeur);
         this.batterie = batterie;
     }
 
@@ -40,8 +20,8 @@ public class OrdinateurPortable extends Materiel {
         return "OrdinateurPortable [" +
                 "Numéro serie = " + getNumeroSerie() +
                 ", Marque = " + getMarque() +
-                ", Ram = " + ram +
-                ", Processeur = " + processeur + 
+                ", Ram = " + getRam() +
+                ", Processeur = " + getProcesseur() + 
                 ", Batterie = " + batterie +
                 ']';
     }

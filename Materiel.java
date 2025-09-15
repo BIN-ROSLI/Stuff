@@ -1,4 +1,4 @@
-public class Materiel {
+public abstract class Materiel {
 
     private String numeroSerie;
     private String marque;
