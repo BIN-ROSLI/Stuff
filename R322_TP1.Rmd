@@ -1,0 +1,139 @@
+---
+title: "R322_TP1"
+output: word_document
+date: "2025-09-16"
+---
+
+```{r}
+
+pop = read.csv2(file.choose(),header=T, stringsAsFactors = T, na.strings = c("NA","na",""), fileEncoding = "latin1")
+
+#3. Non, il faut ordonner la variable PUISSANCE
+
+pop$PUISSANCE2 = ordered(pop$PUISSANCE,levels = c("moins_de_4CV", "4-5_CV", "6-7_CV","8-9_CV","10CV_et_plus"))
+
+str(pop)
+attach(pop)
+```
+```{r}
+(N_APPARTENANCE = sort(table(APPARTENANCE),decreasing = T))
+(P_APPARTENANCE = prop.table(N_APPARTENANCE)*100)
+```
+```{r}
+barplot(P_APPARTENANCE, main="L'appartenance", col=c("blue","yellow","red"),space=1,las=1,xlab="L'appartenance",ylab="fréquences en %")
+```
+```{r}
+pie(P_APPARTENANCE, main = "L'appartenance",col=c("blue","yellow","red"))
+```
+```{r}
+(N_OPTIONS = sort(table(OPTIONS),decreasing = T))
+(P_OPTIONS = prop.table(N_OPTIONS)*100)
+```
+```{r}
+barplot(P_OPTIONS, main="Les options", col=c("blue","yellow","red","green","purple"),space=1,las=1,xlab="Options",ylab="fréquences en %")
+```
+```{r}
+pie(P_OPTIONS, main = "Les options",col=c("blue","yellow","red","green","purple"))
+```
+```{r}
+
+# PUISSANCE est une variable qualitative ordinale. Donc on range le tableau en réspectant l'ordre des modalités
+
+(N_PUISSANCE = table(PUISSANCE2))
+(P_PUISSANCE = prop.table(N_PUISSANCE)*100)
+```
+```{r}
+# Comme PUISSANCE est une variable qualitative ordinale, on peut tracer une diagramme à barres en effectifs ou en fréquences
+
+barplot(P_PUISSANCE, main="La puissance", col=c("blue","yellow","red","green","purple"),space=1,las=1,xlab="Puissance",ylab="fréquences en %")
+
+(plot(table(PUISSANCE2),main="La puissance",xlab="Puissance",ylab="effectifs",las=1))
+
+# Les voitures du fichier ont majoritairelent entre 4 CV et 7 CV (presque 3/4 des voitures dans ce cas)
+```
+```{r}
+unique(ANCIENNETE) # C'est une variable quantitative discrète
+
+# Comme ANCIENNETE est quantitative discrète, on peut tracer un diagramme en batons en effectifs ou fréquences, une courbe cumulative, et eventuellement un boxplot
+```
+```{r}
+mean(ANCIENNETE,na.rm=T) 
+#Les voitures ont en moyenne 4 ans et 2 mois avec un écart type de 2.885, ce qui est élevé. La dispersion globale qu'on pourrait juger importante est due aux grandes valeurs (max=15)
+
+(median(ANCIENNETE,na.rm=T))
+# La moitié des voitures observées a entre 0 et 4 ans d'anciennete, l'autre moitié a entre 4 et 15 ans
+
+IQR(ANCIENNETE,na.rm=T) 
+#Il suffit d'un intervalle d'amplitude 3 ans pour avoir la moitié des voitures, ce qui annonce une dispersion modérée
+
+sd(ANCIENNETE,na.rm=T)
+```
+```{r}
+# Comme ANCIENNETE est une variable quantitative, on range le tableau selon l'ordre croissant des modalités
+(N_ANCIENNETE = table(ANCIENNETE))
+(P_ANCIENNETE = prop.table(N_ANCIENNETE)*100)
+```
+```{r}
+(plot(table(ANCIENNETE),main="L'anciennete",xlab="anciennete",ylab="effectifs",las=1))
+```
+```{r}
+cumsum(P_ANCIENNETE)
+```
+```{r}
+plot(ecdf(ANCIENNETE),main="Les fréquences cumulées de l'anciennete",las=1)
+
+# La diagramme en batons confirme que les voitures étudiées sont récentes, principalement entre 1 et 5 ans (avec un effectif entre 15 et 21 pour chacun de ces ages)
+
+# A partir de 5 ans d'ancienneté, les effectifs baissent notablement. Le maximum 15 est une valeur isolée
+```
+```{r}
+unique(KILOMETRAGE) # C'est une variable quantitative continue
+
+# Comme KILOMETRAGE est une variable quantitative continue, on peut tracer ses effectifs ou ses fréquences à l'aide d'un histogramme, et ses fréquences cumulées à l'aide d'une courbe cumulative. On peut également tracer un boxplot pour représenter sa tendance centrale, sa dispersion
+```
+```{r}
+mean(KILOMETRAGE)
+# Les voitures ont en moyenne de 1671 km avec un écart-type asses élevé. Les quelques valeurs proches de 6000km augmentent la moyenne et l'écart-type
+
+(median(KILOMETRAGE)) 
+# La moitié des voitures ont un kilometrage inférieur à 1500km
+
+IQR(KILOMETRAGE)
+sd(KILOMETRAGE)
+
+# Les voiture ont globalement un faible kilometrage
+```
+```{r}
+hist(KILOMETRAGE, col = "purple")
+```
+```{r}
+(N_KILOMETRAGE = table(KILOMETRAGE))
+(P_KILOMETRAGE = prop.table(N_KILOMETRAGE)*100)
+```
+```{r}
+cumsum(P_KILOMETRAGE)
+```
+```{r}
+plot(ecdf(KILOMETRAGE),main="Les fréquences cumulées du kilometrage",las=1)
+```
+```{r}
+bornes = c(40, 500, 1000, 1500, 2000, 3000, 4000, 6000)
+par(xpd=NA)
+graph = hist(KILOMETRAGE,breaks=bornes,main="Le kilometrage",col="darkblue",axes=T,ylab="");axis(1)
+text(graph$mids,graph$density,graph$counts,adj=c(0.5,-0.5))
+
+# On peut conclure que
+```
+```{r}
+box = boxplot(KILOMETRAGE, main="Le kilometrage",las=1)
+box$out
+
+# On peut conclure que
+```
+```{r}
+KILOMETRAGE2 = KILOMETRAGE[KILOMETRAGE %in% box$out]
+
+box = boxplot(KILOMETRAGE2, main="Le kilometrage",las=1)
+```
+
+
