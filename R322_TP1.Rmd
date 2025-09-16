@@ -122,7 +122,7 @@ par(xpd=NA)
 graph = hist(KILOMETRAGE,breaks=bornes,main="Le kilometrage",col="darkblue",axes=T,ylab="");axis(1)
 text(graph$mids,graph$density,graph$counts,adj=c(0.5,-0.5))
 
-# On peut conclure que
+# Cela confirme que les voitures étudiées ont majoritairement un kilometrage faible, le plus souvent inférieur à 2000 km
 ```
 ```{r}
 box = boxplot(KILOMETRAGE, main="Le kilometrage",las=1)
