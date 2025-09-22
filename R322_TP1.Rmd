@@ -126,14 +126,83 @@ text(graph$mids,graph$density,graph$counts,adj=c(0.5,-0.5))
 ```
 ```{r}
 box = boxplot(KILOMETRAGE, main="Le kilometrage",las=1)
-box$out
+# On peut conclure que la distribution des effectifs n'est pas symétrique autour de la médiane, en effet la dispersion est plus grande dans les grandes valeurs que dans les petites
 
-# On peut conclure que
+box$out
+# Cette variable a des valeurs suspectes
 ```
 ```{r}
-KILOMETRAGE2 = KILOMETRAGE[KILOMETRAGE %in% box$out]
+pop$KM2=pop$KILOMETRAGE
+pop$KM2[pop$KM2 %in% box$out] = median(pop$KM2,na.rm=T)
+summary(pop$KM2)
 
-box = boxplot(KILOMETRAGE2, main="Le kilometrage",las=1)
+hist(KM2)
+box = boxplot(KM2, main="Le kilometrage",las=1)
+```
+```{r}
+# Comme les deux variables sont des variables qualitative nominales, on peut faire un tableau des effectifs,les tableaux des fréquences conditionnelles
+
+(N=table(CARBURANT,MARQUE))
+```
+```{r}
+(Pligne=prop.table(N,1)*100)
+addmargins(Pligne,margin=1)
+# On compare les marques
+```
+```{r}
+(Pcol=prop.table(N,2)*100)
+addmargins(Pligne,margin=2)
+# On compare les carburants
+```
+```{r}
+barplot(N,beside = T ,col=c("red","blue","orange","violet"),legend = T, main = "Répartition des carburants en fonction des marques")
+
+```
+```{r}
+barplot(Pcol,col=c("red","blue","orange","violet"), legend = T, main = "Répartition des carburants en fonction des marques")
+
+#BMW et les autres marques sont majoritairement au sans plomb 98. 
+# Citroen, Fiat, Ford, Mercs et Opel sont majoritairement au gasoil.
+# Seuls Fiat, Peugeot, Renault et Volks utilisent les 4 energies.
+```
+```{r}
+# On croise une qualitative et une quantitative continue, 
+# tableau des effectifs, tableaux des fréquences conditionnelles comme précédemment, en prenant des intervalles comme modalité de kilometrage.
+# tableau de tendances centrales et dispersions conditionnelles
+# boxplot, courbes empilées, histogramme comme pour G
+
+aggregate(KILOMETRAGE ~APPARTENANCE,pop,mean)
+tapply(KILOMETRAGE,APPARTENANCE,mean,na.rm=T)
+
+aggregate(KILOMETRAGE ~APPARTENANCE,pop,sd)
+tapply(KILOMETRAGE,APPARTENANCE,sd,na.rm=T)
+
+aggregate(KILOMETRAGE ~APPARTENANCE,pop,IQR)
+tapply(KILOMETRAGE,APPARTENANCE,IQR,na.rm=T)
+
+```
+```{r}
+boxplot(KILOMETRAGE,APPARTENANCE, main = "La répartition des kilometrage selon l'appartenance")
+```
+```{r}
+
+# On croise deux quantitatives
+# Voici ce que l'on peut faire en plus de ce que l'on a listé à la question H : Nuage de points et Droite de régression s'il exite une corrélation linéaire entre les deux variables
+
+plot(DEPENSE~KILOMETRAGE,main = "Le montant des dépenses en fonction du kilométrage")
+abline(lm(DEPENSE~KILOMETRAGE),col="red")
+
+# L'équation de la droite des moindres carrés:
+# Dépenses = -14.3566 + 0.6862xKilométrage
+
+# Comme 0.6862 > 0, la droite est croissante
+# Cela confirme que globalement les dépenses augmentent avec le kilométrage
+
+```
+```{r}
+cor(DEPENSE,KILOMETRAGE,use="complete.obs")
+
+# 0.85 est proche de 1. Donc il y a une corrélation linéaire entre ces deux variables. Le trace de la droite est justifié
 ```
 
 
