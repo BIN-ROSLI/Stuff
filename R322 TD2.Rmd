@@ -1,0 +1,131 @@
+---
+title: "R322 TD2"
+output: word_document
+date: "2025-09-25"
+---
+```{r}
+par(mfrow=c(2,2))
+N=10000 # Définir le nombre d'échantillons
+n=100 # Définir la taille de chaque échantillon
+E={} # Initialiser un vecteur vide pour stocker les moyennes
+
+# Boucle pour générer N échantillons
+for (i in 1:N) {
+  # On tire un échantillon de taille n suivant la loi uniforme entre 0 et 10
+  X=sample (0:10,n,replace = TRUE)
+  # Calculer la moyenne de l'échantillon tiré et l'ajouter au vecteur E
+  E=cbind (E,mean(X))
+}
+
+# On trace un histogramme avec les moyennes calculées sur chacun des 10000 échantillons
+h=hist(E, breaks = 40, probability = TRUE, col='yellow', main="histogramme du vecteur des moyennes unif")
+
+# Loi normale de moyenne 5 et variance 1
+
+E = c() # Réinitaliser le vecteur E
+
+for (i in 1:N) {
+  # On tire un échantillon de taille n suivant la loi normale N(5,1)
+  X=rnorm(n, mean = 5, sd = 1)
+  E=cbind(E,mean(X))
+}
+
+h=hist(E, breaks = 40, probability = TRUE, col='blue', main="Loi normale N(5,1)")
+
+# Loi exponentielle de paramètre λ = 1/5
+
+E = c()
+
+for (i in 1:N) {
+   # On tire un échantillon de taille n suivant la loi exponentielle de paramètre λ = 1/5
+  X=rexp(n,rate=1/5)
+  E=cbind(E,mean(X))
+}
+
+h=hist(E, breaks = 40, probability = TRUE, col='red', main="Loi exponentielle de paramètre λ = 1/5")
+```
+```{r}
+# On peut remarquer que :
+# Les 3 histogrammes ont la même forme qui est dû au grand nombre d'échantillons.
+# Les échelles des axes différent
+# Les moyennes sont semblables et les écart-type sont différents
+```
+```{r}
+n = 1000
+X = rnorm(n,mean=0,sd=1)
+Y = rnorm(n,mean=0,sd=1)
+Z = log(abs(X))
+
+par(mfrow = c(2,3))
+
+qqplot(X,X,main="X vs X", xlab = "X", ylab = "X", col = "red")
+
+# Tous les points sont sur la même droite. Alors, ils ont la même loi
+
+qqplot(X,Y,main="X vs Y", xlab = "X", ylab = "Y", col = "blue")
+
+# A l'allure d'une droite. Alors, X et Y suivent la même loi N(0,1)
+
+qqplot(X,Z,main="X vs Z", xlab = "X", ylab = "Z", col = "violet")
+
+# N'a pas l'allure d'une droite. Z ne suit pas la même loi que X 
+
+qqplot(Y,Y,main="Y vs Y", xlab = "Y", ylab = "Y", col = "green")
+
+# Tous les points sont sur la même droite. Alors, ils ont la même loi
+
+qqplot(Y,Z,main="Y vs Z", xlab = "Y", ylab = "Z", col = "darkblue")
+
+# N'a pas l'allure d'une droite. Z ne suit pas la même loi que Y
+
+qqplot(Z,Z,main="Z vs Z", xlab = "Z", ylab = "Z", col = "orange")
+
+# Tous les points sont sur la même droite. Alors, ils ont la même loi
+
+# On ne voit pas qu'il y a un lien entre X et Z
+```
+```{r}
+par(mfrow = c(2,3))
+
+plot(X,X,main="X vs X", xlab = "X", ylab = "X", col = "red")
+
+# Mêmes variables, donc on a la droite y = x
+
+plot(X,Y,main="X vs Y", xlab = "X", ylab = "Y", col = "blue")
+
+# Pas de rélation car le nuage n'a pas de forme
+
+plot(X,Z,main="X vs Z", xlab = "X", ylab = "Z", col = "violet")
+
+# Le nuage a une forme particulière. Alors, Z a une rélation avec X
+
+plot(Y,Y,main="Y vs Y", xlab = "Y", ylab = "Y", col = "green")
+
+# Mêmes variables, donc on a la droite y = x
+
+plot(Y,Z,main="Y vs Z", xlab = "Y", ylab = "Z", col = "darkblue")
+
+# Pas de rélation car le nuage n'a pas de forme
+
+plot(Z,Z,main="Z vs Z", xlab = "Z", ylab = "Z", col = "orange")
+
+# Mêmes variables, donc on a la droite y = x
+
+# On ne voit pas que X et Y suivent la même loi
+
+```
+```{r}
+n = 1000
+Xunif = runif(n,min = 0, max = 1)
+Xnorm = rnorm(n,mean=1,sd=1)
+Xexp = rexp(n,rate=1)
+
+par(mfrow=c(2,2))
+
+h=hist(Xunif, breaks = 40, probability = TRUE, col='red', main="Loi uniforme 1 et 0")
+h=hist(Xnorm, breaks = 40, probability = TRUE, col='blue', main="Loi normale N(1,1)")
+h=hist(Xexp, breaks = 40, probability = TRUE, col='violet', main="Loi exponentielle de paramètre λ = 1")
+
+# On retrouve dans l'allure des histogrammes la forme de la densité de la probabilité de la loi de la variable
+```
+
