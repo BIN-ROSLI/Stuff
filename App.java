@@ -1,6 +1,77 @@
+import java.sql.Statement;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.PreparedStatement;
+
 public class App {
 
+    private Connection connexion;
+
+    public Connection getConnexion () {
+        return connexion;
+    }
+
+        public void insertIntoDb (String nom) {
+        String sql;
+
+        sql= "insert into Parc (nomParc)Values (?);";
+        try (
+        PreparedStatement pstmt = connexion.prepareStatement(sql)) {
+            pstmt.setString(1, nom);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+        public void insertIntoDb2 (int idParc, String type, int numeroSerie, String marque) {
+        String sql;
+
+        sql= "insert into Materiel (id_Parc,numSerie,marque,type) Values (?,?,?,?);";
+        try (
+        PreparedStatement pstmt = connexion.prepareStatement(sql)) {
+            pstmt.setInt(1, idParc);
+            pstmt.setInt(2, numeroSerie);
+            pstmt.setString(3, marque);
+            pstmt.setString(4, type);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public int getIdParc(String nomParc) {
+    String sql = "SELECT idParc FROM Parc WHERE nomParc = ?";
+    int idParc = -1; // Default value if not found
+
+    try (PreparedStatement pstmt = connexion.prepareStatement(sql)) {
+        pstmt.setString(1, nomParc);
+        ResultSet rs = pstmt.executeQuery();
+
+        if (rs.next()) {
+            idParc = rs.getInt("idParc"); // Store foreign key in variable
+        }
+    } catch (SQLException e) {
+        System.out.println("Error retrieving idParc: " + e.getMessage());
+    }
+
+    return idParc;
+}
+
+
     public App () {
+        try {
+            // L'url d'accès
+            String url = "jdbc:sqlite:./parc.db";
+            // Créer une bd ou l'ouvrir si existante
+            connexion = DriverManager.getConnection(url);
+            System.out.println("Connexion à SQLite établie.");    
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
         Parc p1;
         Parc p2;
         Materiel m;
@@ -30,7 +101,11 @@ public class App {
     }
 
     public static void main(String[] args) throws Exception {
-        System.out.println("Hello, World!");
-        new App();
+        App p;
+        p = new App();
+        p.insertIntoDb("Salle 202");
+        int idParc = p.getIdParc("Salle 202");
+        p.insertIntoDb2(idParc, "Ordinateur Fixe", 42068, "Samsung");
+
     }
 }
