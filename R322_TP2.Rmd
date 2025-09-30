@@ -1,0 +1,162 @@
+---
+title: "R322_TP2"
+author: "fir"
+date: "2025-09-30"
+output: word_document
+---
+
+1.Etude de mesures obtenues ping
+
+```{r}
+GW = read.table(file.choose())
+GW = GW[,1]
+```
+```{r}
+JP = read.table(file.choose())
+JP = JP[,1]
+```
+
+i) Tracer les fonctions de répartition des vecteurs GW et JP.
+```{r}
+
+par(mfrow=c(1,2))
+
+plot(ecdf(GW), main="Fonctions de répartition de GW", xlab="Temps(ms)")
+plot(ecdf(JP), main="Fonctions de répartition de JP", xlab="Temps(ms)")
+
+```
+```{r}
+boxplot(GW,JP, names=c("GW","JP"), main="La répartition de GW et JP",las = 1)
+```
+Les boxplots permettent d'avoir une vision directe des valeurs extrêmes de :
+1. La tendance centrale
+2. La dispersion (GW moins dispersé que JP)
+3. Les valeurs suspectes (GW plus eloigné de sa dispersion, JP moin eloigné de sa dispersion que GW)
+```{r}
+
+Th_GW = min(max(GW),IQR(GW) * 1.5 + quantile(GW,0.75))
+
+Th_JP = min(max(JP),IQR(JP) * 1.5 + quantile(JP,0.75))
+
+Index_GW = which(GW<Th_GW)
+Index_JP = which(JP<Th_JP)
+GWf = GW[Index_GW]
+JPf = JP[Index_JP]
+```
+```{r}
+par(mfrow=c(2,2))
+
+plot(ecdf(GW),main="ecdf GW")
+plot(ecdf(GWf),main="ecdf GW (filtré)")
+plot(ecdf(JP),main="ecdf JP")
+plot(ecdf(JPf),main="ecdf JP (filtré)")
+```
+Sans filtrage : 
+Difficile de comparer les 2 courbes à cause des valeurs extrêmes
+
+Avec filtrage :
+La fonction de répartition de GWf rassemble à celle d'une loi normale
+L'allure de celle de JPf est moins proche de celle d'une loi normale
+```{r}
+# On récupère les numéros des individus pour lesquels la valeur de JP est inférieure à D9(JP), c-à-d qu'on éxclut les 10% plus grandes valeurs de JP
+Index_JP = which(JP<quantile(JP,0.9))
+
+# De même pour GW
+Index_GW = which(GW<quantile(GW,0.9))
+
+# On fait l'intersection des 2 ensembles, c-à-d on exclut les individus ayant une valeur au delà de D9 pour l'une des deux variables
+Index = intersect(Index_GW,Index_JP)
+
+# On trace les points des individus sans ces valeurs extrêmes
+plot(GW[Index],JP[Index])
+```
+Le nuage n'a pas une forme. Donc, il n'y a pas une corrélation linéaire entre GW et JP.
+
+```{r}
+cor(GW,GW) # Mêmes variables
+cor(GW,2*GW-10) # Corrélation linéaire
+cor(GW,10-2*GW) # Corrélation linéaire
+cor(GW,log(GW)) 
+# Il y a une certaine robustesse si la relation n'est pas tout à fait linéaire comme le log
+cor(GW,sin(GW))
+# Le sin est un cas extrême où on ne voit plus rien avec le coefficient de corrélation linéaire, bien qu'une relation lie les deux variables
+```
+```{r}
+cor(GW,JP) # Il n'y a pas une corrélation linéaire
+```
+```{r}
+JPV4 = read.table(file.choose())
+JPV4 = JPV4[,1]
+
+JPV6 = read.table(file.choose())
+JPV6 = JPV6[,1]
+```
+```{r}
+par(mfrow=c(1,2))
+
+
+```
+```{r}
+boxplot(JPV4,JPV6, names=c("GW","JP"), main="La répartition de JPV4 et JPV6",las = 1)
+# Les deux boxplots se rassemblent pour ce qui est de la dispersion. En revanche, la tendance centrale diffère : JPV6 a une mediane plus élevée que JPV6
+
+plot(JPV4,JPV6)
+# Le nuage de points a une forme, on remarque une tendance linéaire croissante, quand JP4 augmente, JP6 augmente aussi. Le nuage de points montre une certaine corrélation linéaire
+```
+```{r}
+cor(JPV4,JPV6) # une relation linéaire existe entre les deux variables
+```
+```{r}
+modele = lm(JPV6~JPV4)
+residus = residuals(modele)
+val_ajustees = fitted(modele)
+
+plot(residus~val_ajustees)
+# Le nuage de points n'est pas complètement aléatoire; La rélation entre JPV4 et JPV6 n'est pas tout de fait linéaire
+hist(residus)
+# Les résidus suivent vaguement une loi normale. Ce qui n'invalide pas la droite
+```
+```{r}
+
+```
+2. Générateur de nombres aléatoires
+```{r}
+RD = read.table(file.choose())
+RD = RD[,1]
+
+summary(RD)
+```
+```{r}
+par(mfrow=c(2,2))
+
+plot(ecdf(RD))
+x = runif(1000,min=min(RD),max=max(RD))
+plot(ecdf(x))
+y = rnorm(1000,mean=mean(RD),sd=sd(RD))
+plot(ecdf(y))
+
+#La fonction de répartition de RD rassemble à celle de la loi uniforme (et pas à celle de la loi normale)
+```
+```{r}
+hist(RD)
+# On a un problème à derniere intervalle
+```
+```{r}
+hist(RD,plot=FALSE)
+
+# 18 bornes alors 17 intervalles
+# Les intervalles s'étaient entre 0 et 34000, or le max est 32767
+
+# Le dernier intervalle a un effectif plus faible que les autres car les valeurs de la variable ne couvrent pas l'ensemble de l'intervalles
+```
+```{r}
+N=17
+bin_width=(max(RD)-min(RD))/N 
+# On calcule la largeur commune à tous les intervalles
+nbins = seq(min(RD)-bin_width, max(RD)+bin_width, by =bin_width)
+# On calcule les bornes de chaque intervalle, en créant un intervale d'effectif nul au début et à la fin pour un bel affichage de l'histogramme
+hist(RD,breaks=nbins)
+```
+Avec peu d'intervalles, on ne reconnait pas bien l'histogramme d'une loi uniforme à cause du dernier intervalle.
+
+Avec un tr
